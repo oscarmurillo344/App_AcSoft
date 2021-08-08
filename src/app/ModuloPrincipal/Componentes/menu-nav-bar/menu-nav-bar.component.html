@@ -1,0 +1,78 @@
+<mat-sidenav-container class="w-100 h-100 FondoPantalla">
+
+    <mat-sidenav #drawer class="sidenav FondoNavBar" fixedInViewport 
+        [opened]="_dataservice.VerBarraLateral"
+        [attr.role]="_dataservice.VerBarraLateral ? 'dialog' : 'navigation'"
+        [mode]="_dataservice.VerBarraLateral ? 'side' : 'over'">
+
+        <div class="Menu p-3">
+          <div class="row">
+            <div class="col-4">
+              <img class="rounded" width="50" src="../../../../assets/imagenes/logo.jpg" alt="Logotipo Da&ntilde;ado">
+            </div>
+            <div class="col-8">
+              <h2> Proyecto</h2>
+            </div>
+          </div>
+        </div>
+
+       <h3 class="text-center text-white mt-2">Menú</h3> 
+
+      <mat-nav-list>
+        <mat-list-item routerLink="principal" class="text-white" (click)="accordion.closeAll()"
+        (click)="_dataservice.VerBarraLateral ? '' :drawer.toggle()" routerLinkActive="active">
+            <mat-icon>
+              home
+            </mat-icon> 
+            Inicio
+          </mat-list-item>
+          <mat-divider></mat-divider>
+       </mat-nav-list>
+       <mat-accordion>
+       <mat-expansion-panel class="FondoNavBar"  hideToggle multi *ngFor="let formulario of ListaItem">
+        <mat-expansion-panel-header>
+          <mat-panel-title class="text-white">
+             
+            <span> {{formulario.modulo}} </span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <!-- desglose de pantallas -->
+        <mat-nav-list>
+          <mat-list-item *ngFor="let item of formulario.detalle" routerLink="{{item.nombreFisico}}" class="text-white"
+          (click)="_dataservice.VerBarraLateral ? '' :drawer.toggle()" routerLinkActive="active">
+              {{item.descripcion}}
+            </mat-list-item>
+            
+            <mat-divider></mat-divider>
+            <mat-list-item *ngIf="formulario.modulo == 'Sesión'" routerLinkActive="active" class="text-white" (click)="logOut()" (click)="drawer.toggle()">
+              <mat-icon>
+                logout 
+              </mat-icon>
+              Cerrar sesión
+            </mat-list-item>
+         </mat-nav-list>
+      </mat-expansion-panel>
+      </mat-accordion>
+    </mat-sidenav>
+
+    
+    <mat-sidenav-content>
+      <mat-toolbar class="Fixed FondoToolBar capaSuperior" *ngIf="_dataservice.VerCabecera" >
+          <button mat-icon-button class="text-white"
+            (click)="drawer.toggle()">
+            <mat-icon >menu</mat-icon>
+          </button>
+          <span class="spacer"></span>
+          <button mat-button class="text-white" [matMenuTriggerFor]="menu">
+            <mat-icon>account_circle</mat-icon> {{_dataservice._NombreUsuario}} </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="logOut()">
+              <mat-icon>logout</mat-icon>Cerrar sesión</button>
+          </mat-menu>
+      </mat-toolbar>
+
+      <router-outlet *ngIf="_dataservice.Cargando" ></router-outlet>
+      <mat-spinner class="mx-auto loading" *ngIf="!_dataservice.Cargando" [color]="color"></mat-spinner>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

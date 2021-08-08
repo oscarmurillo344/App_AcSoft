@@ -1,0 +1,54 @@
+<div *ngIf="_dataservice.Cargando">
+<div class="container EspacioContenedor FondoPantalla">
+    <div class="row mb-4">
+        <div class="col-md-6 col-12">
+            <h2>Proyecto</h2>
+            <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos
+                 de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el
+                  año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) 
+                  desconocido usó una galería de textos y los mezcló de tal manera que logró 
+                  hacer un libro de textos especimen. </p>
+        </div>
+        <div class="col-md-6 col-12 ">
+            <mat-card>
+                <mat-card-header style="text-align: center;">
+                   <h2>Iniciar Sesi&oacute;n</h2> 
+                </mat-card-header>
+                <mat-card-content [formGroup]="UserForm" >
+                    <mat-form-field class="w-100" >
+                        <mat-label>Usuario</mat-label>
+                        <input matInput type="text" formControlName="usuario">
+                      </mat-form-field>
+                        <mat-form-field class="w-100">
+                          <mat-label>password</mat-label>
+                          <input matInput [type]="hide ? 'password' : 'text'" formControlName="contrasena" (keyup.enter)="LogIn()">
+                          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                          </button>
+                      </mat-form-field>
+                      <mat-error *ngIf="Validar" style="margin-bottom:5%;">
+                        contrase&ntilde;a o usuario incorrecto
+                      </mat-error>
+                    </mat-card-content>
+                <mat-card-actions >
+                    <button (click)="LogIn()" mat-raised-button color="primary" 
+                          class="w-100" >
+                      <mat-icon>login</mat-icon>
+                      Login</button>
+                  </mat-card-actions>
+            </mat-card>
+        </div>
+    </div> 
+</div>
+<footer class="text-center text-lg-start text-muted footer w-100 d-none d-md-block"> 
+  <section class="d-flex justify-content-center justify-content-lg-between p-4">
+    <div class="me-5">
+      <span>© 2021 Copyright:</span>
+    </div>
+    <div>
+      <span class="text-reset fw-bold" >Proyecto - Derechos Reservados</span>
+    </div>
+  </section> 
+</footer>  
+</div>
+<mat-spinner class="mx-auto loading" *ngIf="!_dataservice.Cargando" [color]="color"></mat-spinner>

@@ -1,0 +1,92 @@
+<div class="container">
+    <mat-card class="FormularioStyle my-4" >
+      <mat-card-title class="p-3">Ingresar Cliente</mat-card-title>
+        <form [formGroup]="ClienteForm">
+            <div class="row">
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Codigo</mat-label>
+                  <input matInput type="text" formControlName="IdCliente">
+                </mat-form-field>
+              </div>
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Seleccione tipo identificación:</mat-label>
+                  <mat-select formControlName="TipoIdentificacion">
+                    <mat-option value="cedula">Cedula</mat-option>
+                    <mat-option value="ruc">Ruc</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Nombre</mat-label>
+                  <input matInput type="text" formControlName="Nombre">
+                </mat-form-field>
+              </div>
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Identificación</mat-label>
+                  <input matInput type="text" formControlName="Identificacion">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Dirección</mat-label>
+                  <input matInput type="text" formControlName="Direccion">
+                </mat-form-field>
+              </div>
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Telefono</mat-label>
+                  <input matInput type="text" formControlName="Telefono">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Correo</mat-label>
+                  <input matInput type="email" formControlName="Correo">
+                </mat-form-field>
+              </div>
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Razón Social</mat-label>
+                  <input matInput type="text" formControlName="RazonSocial">
+                </mat-form-field>
+              </div>
+            </div>
+             <div class="row">
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Seleccione estado:</mat-label>
+                  <mat-select formControlName="Estado">
+                    <mat-option value="cedula">Verdadero</mat-option>
+                    <mat-option value="ruc">Falso</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6 col-12">
+                <mat-form-field class="w-100" >
+                  <mat-label>Seleccione activo:</mat-label>
+                  <mat-select formControlName="Activo">
+                    <mat-option value="cedula">Cedula</mat-option>
+                    <mat-option value="ruc">Ruc</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+             </div>
+        </form>
+          <mat-card-actions>
+            <button  mat-raised-button class="w-100" (click)="CrearCliente()" color="primary" >
+                Ingresar 
+            </button>
+          </mat-card-actions>
+      </mat-card>
+</div>

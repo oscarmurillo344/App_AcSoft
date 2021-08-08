@@ -1,3 +1,6 @@
 export const environment = {
-  production: true
+  production: true,
+  UrlLocal: 'http://localhost:',
+  PuertoUsuariolocal: '81/',
+  PuertoClientelocal: '82/'
 };
