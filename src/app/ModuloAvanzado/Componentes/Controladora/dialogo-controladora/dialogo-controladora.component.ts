@@ -21,7 +21,7 @@ export class DialogoControladoraComponent implements OnInit {
                   private fb: FormBuilder,
                   private mensajeModal: ToastrService,
                   private _Controladorservice:ControladoraService,
-                  private _dataService: DataService) { 
+                  ) { 
                   this.ControladoraAct = data
                  }
               
@@ -31,26 +31,24 @@ export class DialogoControladoraComponent implements OnInit {
 
   CrearFormulario(controladora:ControladoraRequest): void{
     this.ActControladoraForm = this.fb.group({
-        Nombre: [controladora.Nombre, Validators.required, Validators.maxLength(10)],
-        Codigo: [controladora.Codigo, Validators.required],
-        Marca: [controladora.Marca ,Validators.required],
-        Serie: [controladora.Serie, Validators.required, Validators.maxLength(20)],
-        Activo: [controladora.Activo, Validators.required]
+        nombre:         [controladora.nombre,[Validators.required, Validators.maxLength(10)]],
+        idControladora: [controladora.idControladora, Validators.required],
+        idMarca:        [controladora.idMarca.toString() ,Validators.required],
+        serie:          [controladora.serie, [Validators.required, Validators.maxLength(20)]],
+        activo:         [String(controladora.activo), Validators.required]
     })
   }
   
   ActualizarControladora(): void{
     if(this.ActControladoraForm.valid){
-      this._dataService.Cargando = false
       this.ControladoraAct = this.ActControladoraForm.value as ControladoraRequest
+      this.ControladoraAct.idMarca = Number(this.ControladoraAct.idMarca)
       this._Controladorservice.Grabar(this.ControladoraAct)
           .subscribe( (data:MensajeResponse) =>{
             if(data.retorno){
-              this._dataService.Cargando = true
               this.mensajeModal.success("Registro exitoso","Exitosos")
             }
           },() => {
-            this._dataService.Cargando = true
             this.mensajeModal.error("Error en la consulta", "Error")
           })
     }else{

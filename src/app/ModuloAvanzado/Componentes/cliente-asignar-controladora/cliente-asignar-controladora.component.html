@@ -1,0 +1,97 @@
+<div class="container">
+    <mat-card class="my-4">
+      <mat-card-title class="p-3">Asignar controladora a clientes</mat-card-title>
+      <form [formGroup]="FormClienteControlador">
+        <div class="row" >
+          <div class="col-md-6 col-12"  >
+            <mat-form-field class="w-100">
+                <mat-label>Cliente</mat-label>
+                <input type="text"
+                       placeholder="Añadir cliente"
+                       matInput
+                       formControlName="clienteControl"
+                       [matAutocomplete]="autoCliente">
+                <mat-autocomplete #autoCliente="matAutocomplete">
+                  <mat-option *ngFor="let cliente of optionsCliente" [value]="cliente.nombre">
+                    {{cliente.nombre}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+          </div>
+          <div class="col-md-6 col-12">
+            <mat-form-field class="w-100">
+                <mat-label>Controladora</mat-label>
+                <mat-chip-list #chipList >
+                  <mat-chip
+                  *ngFor="let control of Controladoras"
+                  [selectable]="true"
+                  [removable]="true"
+                  (removed)="remove(control)">
+                  {{control.nombre}}
+                  <mat-icon matChipRemove >cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Añadir controladora"
+                       #ControladorInput
+                       formControlName="ControladoraControl"
+                       [matAutocomplete]="autoControlador"
+                       [matChipInputFor]="chipList"
+                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                       [matChipInputAddOnBlur]=true>
+                </mat-chip-list>
+                <mat-autocomplete #autoControlador="matAutocomplete"
+                                  (optionSelected) = "SeleccionControl($event)">
+                  <mat-option *ngFor="let controladora of optionsControladora" 
+                              [value]="controladora">
+                    {{controladora.nombre}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <button mat-fab color="primary" class="float-end" matTooltip="Agregar cliente" (click)="AgregarCliente()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+      </form>
+  </mat-card>
+      <table mat-table [dataSource]="ListaAsignar"  class="w-100 mt-3">
+  
+          <ng-container matColumnDef="N">
+            <th mat-header-cell *matHeaderCellDef> N° </th>
+            <td mat-cell *matCellDef="let element "> {{ element.Nombre }} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="Marca">
+            <th mat-header-cell *matHeaderCellDef>Marca</th>
+            <td mat-cell *matCellDef="let element "> {{ element.Marca }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Nombre">
+            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <td mat-cell *matCellDef="let element "> {{ element.Nombre }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Serie">
+            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <td mat-cell *matCellDef="let element "> {{ element.Serie }} </td>
+          </ng-container>
+          
+          <!-- Weight Column -->
+          <ng-container matColumnDef="Eliminar">
+            <th mat-header-cell *matHeaderCellDef>  </th>
+            <td mat-cell *matCellDef="let element"> 
+              <button  mat-mini-fab color="warn" (click)="Eliminar(element)" >
+                <mat-icon>
+                  delete
+                </mat-icon>
+              </button>
+            </td>
+          </ng-container>
+      
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+  </div>

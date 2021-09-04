@@ -5,13 +5,14 @@
             <div class="col-md-6 col-12">
               <mat-form-field class="w-100" >
                 <mat-label>Codigo</mat-label>
-                <input matInput type="text" formControlName="Codigo">
+                <input matInput type="text" formControlName="idControladora">
               </mat-form-field>
             </div>
             <div class="col-md-6 col-12">
               <mat-form-field class="w-100" >
                 <mat-label>Nombre</mat-label>
-                <input matInput type="text" formControlName="Nombre">
+                <input matInput #inputNombre type="text" maxlength="10" formControlName="nombre">
+                <mat-hint align="end">{{inputNombre.value?.length || 0}}/10</mat-hint>
               </mat-form-field>
             </div>
           </div>
@@ -19,34 +20,34 @@
             <div class="col-md-6 col-12">
               <mat-form-field class="w-100" >
                 <mat-label>Serie</mat-label>
-                <input matInput type="text" formControlName="Serie">
+                <input matInput #inputSerie type="text" maxlength="20" formControlName="serie">
+                <mat-hint align="end" >{{inputSerie.value?.length || 0}}/20</mat-hint>
               </mat-form-field>
             </div>
             <div class="col-md-6 col-12">
               <mat-form-field class="w-100" >
                 <mat-label>Seleccione marca:</mat-label>
-                <mat-select formControlName="Marca">
-                  <mat-option value="marca1">marca1</mat-option>
-                  <mat-option value="marca2">marca2</mat-option>
+                <mat-select formControlName="idMarca">
+                  <mat-option value="1">marca1</mat-option>
+                  <mat-option value="2">marca2</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
           </div>
-
           <div class="row">
-              <div class="col-12">
-                  <mat-form-field class="w-100" >
-                    <mat-label>Seleccione Activo:</mat-label>
-                    <mat-select formControlName="Activo">
-                      <mat-option value="cedula">Verdadero</mat-option>
-                      <mat-option value="ruc">Falso</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
+            <div class="col-md-6 col-12">
+              <mat-form-field class="w-100" >
+                <mat-label>Seleccione Activo:</mat-label>
+                <mat-select formControlName="activo">
+                  <mat-option value="true">Verdadero</mat-option>
+                  <mat-option value="false">Falso</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
           </div>
       </form>
         <mat-card-actions>
-          <button  mat-raised-button class="w-100" (click)="ActualizarControladora()" color="primary" >
+          <button  mat-raised-button mat-dialog-close class="w-100" (click)="ActualizarControladora()" color="primary" >
               Actualizar 
           </button>
         </mat-card-actions>

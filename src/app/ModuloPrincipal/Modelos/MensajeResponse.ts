@@ -4,6 +4,6 @@ export interface MensajeResponse {
     codigoRetorno: string
     mensajeRetorno: string
     fechaRetorno: Date
-    objetoRetorno: any
+    objetoRetorno: any | any[] 
     
 }

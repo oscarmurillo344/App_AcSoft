@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 
 import { AvanzadoRoutingModule } from './modulo-avanzado-routing.module';
 
@@ -20,6 +20,8 @@ import { CompartidoModule } from '../ModuloCompartido/compartido.module';
 import { ClienteService } from './Servicios/cliente.service';
 import { ControladoraService } from './Servicios/controladora.service';
 import { TagService } from './Servicios/tag.service';
+import { ClienteAsignarTagComponent } from './Componentes/cliente-asignar-tag/cliente-asignar-tag.component';
+import { ClienteAsignarControladoraComponent } from './Componentes/cliente-asignar-controladora/cliente-asignar-controladora.component';
 
 
 
@@ -36,7 +38,10 @@ import { TagService } from './Servicios/tag.service';
                  PrincipalTagComponent,
                  CrearTagComponent,
                  EditarAnularTagComponent,
-                 DialogoTagComponent
+                 DialogoTagComponent,
+                 EditarAnularControladoraComponent,
+                 ClienteAsignarTagComponent,
+                 ClienteAsignarControladoraComponent
           ],
   imports: [
     CompartidoModule,
@@ -54,12 +59,17 @@ import { TagService } from './Servicios/tag.service';
             PrincipalTagComponent,
             CrearTagComponent,
             EditarAnularTagComponent,
-            DialogoTagComponent
+            DialogoTagComponent,
+            ClienteAsignarTagComponent,
+            ClienteAsignarControladoraComponent
           ],
     providers:[
       ClienteService,
       ControladoraService,
       TagService
+    ],
+    schemas:[
+      CUSTOM_ELEMENTS_SCHEMA
     ]
 })
 export class AvanzadoModule { }

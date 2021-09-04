@@ -16,9 +16,13 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatTableModule} from '@angular/material/table';
 import {MatDialogModule } from '@angular/material/dialog';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatChipsModule} from '@angular/material/chips';
 
 
 const ModuloMaterial = [
+  MatTooltipModule,
   MatToolbarModule,
   MatDialogModule,
   MatSidenavModule,
@@ -30,11 +34,13 @@ const ModuloMaterial = [
   MatExpansionModule,
   MatDividerModule,
   MatMenuModule,
+  MatChipsModule,
   MatFormFieldModule,
   MatSelectModule,
   MatTabsModule,
   MatTableModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatAutocompleteModule
 ]
 
 @NgModule({

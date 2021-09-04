@@ -2,7 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { TagRequest } from 'src/app/ModuloAvanzado/Modelos/tag-request';
+import { TagRequest } from 'src/app/ModuloAvanzado/Modelos/TagRequest';
+import { TagService } from 'src/app/ModuloAvanzado/Servicios/tag.service';
+import { MensajeResponse } from 'src/app/ModuloPrincipal/Modelos/MensajeResponse';
 
 @Component({
   selector: 'app-dialogo-tag',
@@ -15,7 +17,9 @@ export class DialogoTagComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data:TagRequest,
                  private mensajeModal: ToastrService,
-                 private fb: FormBuilder) { 
+                 private fb: FormBuilder,
+                 private _servicioTag:TagService
+                 ) { 
                   this.TagAct = data
                  }
               
@@ -23,20 +27,28 @@ export class DialogoTagComponent implements OnInit {
     this.CrearFormulario(this.TagAct)
   }
 
-  CrearFormulario(controladora:TagRequest): void{
+  CrearFormulario(Tag:TagRequest): void{
     this.ActTagForm = this.fb.group({
-        Nombre:       [controladora.Nombre, Validators.required, Validators.maxLength(10)],
-        Codigo:       [controladora.Codigo, Validators.required],
-        CodigoAcceso: [controladora.CodigoAcceso ,Validators.required, Validators.maxLength(20)],
-        Activo:       [controladora.Activo, Validators.required]
+        nombre:       [Tag.nombre, [Validators.required, Validators.maxLength(10)]],
+        idTag:        [Tag.idTag, Validators.required],
+        codigoAcceso: [Tag.codigoAcceso , [Validators.required, Validators.maxLength(20)]],
+        activo:       [String(Tag.activo), Validators.required]
     })
   }
   
   ActualizarTag(): void{
     if(this.ActTagForm.valid){
       this.TagAct = this.ActTagForm.value as TagRequest
-      console.log(this.TagAct)
-      this.mensajeModal.success("Registro exitoso","Exitosos")
+      this.TagAct.idTag = Number(this.TagAct.idTag) 
+      this._servicioTag.Grabar(this.TagAct)
+            .subscribe((data:MensajeResponse)=>{
+              if(data.retorno){
+                this.mensajeModal.success("Registro exitoso","Exitosos")
+              }
+              this.ActTagForm.reset()
+            },() => {
+              this.mensajeModal.error("Error en la consulta", "Error")
+            })
     }else{
       this.mensajeModal.info("El formulario es inválido","Información")
     }

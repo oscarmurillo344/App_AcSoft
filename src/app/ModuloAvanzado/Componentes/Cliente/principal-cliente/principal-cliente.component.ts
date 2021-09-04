@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Observer } from 'rxjs';
+import { DataService } from 'src/app/ModuloPrincipal/Servicios/data.service';
 
 @Component({
   selector: 'app-principal-cliente',
@@ -7,7 +7,8 @@ import { Observable, Observer } from 'rxjs';
 })
 export class PrincipalClienteComponent implements OnInit {
 
-  
+ 
+
   constructor() {
   }
 

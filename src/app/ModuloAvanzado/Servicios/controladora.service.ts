@@ -5,8 +5,8 @@ import { MensajeResponse } from 'src/app/ModuloPrincipal/Modelos/MensajeResponse
 import { environment } from 'src/environments/environment.prod';
 import { ControladoraRequest } from '../Modelos/ControladoraRequest';
 
-const Url_Controladora = `${environment.UrlLocal + environment.PuertoClientelocal + 
-  'acsoft/api/avanzado/controladora/v1/'}`;
+const PathControladora = 'acsoft/api/avanzado/controladora/v1/';
+const Url_Controladora = `${environment.UrlLocal + environment.PuertoClientelocal + PathControladora}`;
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +16,7 @@ export class ControladoraService {
   constructor(private http: HttpClient) { }
 
   public Grabar(controladora:ControladoraRequest):Observable<MensajeResponse>{
-    let params = new URLSearchParams()
-    params.append("usuario", "")
-    params.append("estacion", "" )
-    console.log(params.toString())
-    return this.http.post<MensajeResponse>( Url_Controladora +'grabar/?'+params.toString(), controladora);
+    return this.http.post<MensajeResponse>( Url_Controladora +'grabar', controladora);
   }
 
   public Consultar(idCliente:number):Observable<MensajeResponse>{

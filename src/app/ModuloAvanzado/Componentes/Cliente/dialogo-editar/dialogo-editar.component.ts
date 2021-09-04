@@ -28,16 +28,16 @@ export class DialogoEditarComponent implements OnInit {
 
   CrearFormulario(cliente:ClienteRequest){
     this.ActualizarClienteForm = this.fb.group({
-      IdCliente:          [cliente.IdCliente,Validators.required],
-      TipoIdentificacion: [cliente.TipoIdentificacion,Validators.required],
-      Identificacion:     [cliente.Identificacion,Validators.required],
-      Nombre:             [cliente.Nombre,Validators.required],
-      Direccion:          [cliente.Direccion,Validators.required],
-      Telefono:           [cliente.Telefono,Validators.required, Validators.pattern("^[0-9]*$")],
-      Correo:             [cliente.Correo,Validators.required,Validators.email],
-      RazonSocial:        [cliente.RazonSocial,Validators.required],
-      Estado:             [cliente.Estado,Validators.required],
-      Activo:             [cliente.Activo,Validators.required]
+      idCliente:          [cliente.idCliente, Validators.required],
+      tipoIdentificacion: [cliente.tipoIdentificacion,Validators.required],
+      identificacion:     [cliente.identificacion,Validators.required],
+      nombre:             [cliente.nombre,Validators.required],
+      direccion:          [cliente.direccion,Validators.required],
+      telefono:           [cliente.telefono,[Validators.required, Validators.pattern("^[0-9]*$")]],
+      correo:             [cliente.correo,[Validators.required,Validators.email]],
+      razonSocial:        [cliente.razonSocial,Validators.required],
+      estado:             [cliente.estado.toString(),Validators.required],
+      activo:             [String(cliente.activo),Validators.required]
     })  
   }
   ActualizarCliente():void{
@@ -45,8 +45,10 @@ export class DialogoEditarComponent implements OnInit {
       this.ActCliente = this.ActualizarClienteForm.value as ClienteRequest
       this._Clienteservice.Grabar(this.ActCliente)
           .subscribe( (data:MensajeResponse) =>{
-
-          },err =>{
+            if(data.retorno){
+              this.mensajeModal.success("Registro exitoso","Exitosos")
+            }
+          },() =>{
             this.mensajeModal.error("Error en la consulta","Error")
           })
     }else{

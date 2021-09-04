@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ControladoraService } from 'src/app/ModuloAvanzado/Servicios/controladora.service';
 import { MensajeResponse } from 'src/app/ModuloPrincipal/Modelos/MensajeResponse';
-import { DataService } from 'src/app/ModuloPrincipal/Servicios/data.service';
 import { ControladoraRequest } from '../../../Modelos/ControladoraRequest';
 
 @Component({
@@ -18,8 +17,7 @@ export class CrearControladoraComponent implements OnInit {
   constructor(
     private mensajeModal: ToastrService,
     private fb: FormBuilder,
-    private _Controladorservice:ControladoraService,
-    private _dataService: DataService
+    private _Controladorservice:ControladoraService
     ) {  }
 
   ngOnInit(): void {
@@ -28,26 +26,24 @@ export class CrearControladoraComponent implements OnInit {
 
   CrearFormuario(){
     this.ControladoraForm = this.fb.group({
-        Nombre: ['', Validators.required, Validators.maxLength(10)],
-        Codigo: ['', Validators.required],
-        Marca:  ['', Validators.required],
-        Serie:  ['', Validators.required, Validators.maxLength(20)],
-        Activo: ['', Validators.required]
+        nombre: ['', [Validators.required, Validators.maxLength(10)]],
+        idMarca:['', Validators.required],
+        serie:  ['', [Validators.required, Validators.maxLength(20)]],
+        activo: ['', Validators.required]
     });
   }
 
   CrearControladora(): void{
     if(this.ControladoraForm.valid){
-      this._dataService.Cargando = false
       this.Controladora = this.ControladoraForm.value as ControladoraRequest
+      this.Controladora.idMarca = Number(this.Controladora.idMarca)
       this._Controladorservice.Grabar(this.Controladora)
           .subscribe( (data:MensajeResponse) =>{
             if(data.retorno){
-              this._dataService.Cargando = true
               this.mensajeModal.success("Registro exitoso","Exitosos")
             }
-          },() => {
-            this._dataService.Cargando = true
+            this.ControladoraForm.reset()
+          },(err) => {
             this.mensajeModal.error("Error en la consulta", "Error")
           })
     }else{

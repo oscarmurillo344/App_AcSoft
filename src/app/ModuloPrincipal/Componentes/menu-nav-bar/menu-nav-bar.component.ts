@@ -7,7 +7,6 @@ import { SeguridadService } from 'src/app/ModuloSeguridad/Servicios/seguridad.se
 import { Formulario } from 'src/app/ModuloSeguridad/Modelos/Formulario';
 import { VistaFormulario } from 'src/app/ModuloSeguridad/Modelos/VistaFormulario';
 import { DetalleVista } from 'src/app/ModuloSeguridad/Modelos/DetalleVista';
-import { ThemePalette } from '@angular/material/core';
 
 @Component({
   selector: 'app-menu-nav-bar',
@@ -19,9 +18,6 @@ export class MenuNavBarComponent implements OnInit {
   @ViewChild(MatAccordion) accordion: MatAccordion;
   ListaItem: VistaFormulario[]=[]
   formularios: Formulario[]
-  color:ThemePalette = "primary"
-  Colores:ThemePalette[]=['accent','warn','primary']
-  numero:number=0
 
 constructor(private router:Router,
             public _dataservice: DataService,
@@ -33,11 +29,6 @@ constructor(private router:Router,
         .subscribe( (data:string) => {
           this.llenarListaModulosNav(data)
         })
-
-  setInterval(()=>{
-    (this.numero == this.Colores.length) ? this.numero -= this.Colores.length : this.numero++
-      this.color = this.Colores[this.numero]
-    },2000)
 
   if(!this.sesion.SesionStorageObtener("Usuario")){
     this._dataservice.VerBarraLateral = false
@@ -70,7 +61,6 @@ llenarListaModulosNav(data:string){
     this.sesion.SesionStorageLimpiar()
     this._dataservice.VerCabecera = false
     this._dataservice.VerBarraLateral = false
-    this._dataservice.Cargando = true
     this.router.navigate(['seguridad/login'])
   }
 

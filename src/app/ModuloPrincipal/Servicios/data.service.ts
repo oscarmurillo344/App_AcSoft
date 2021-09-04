@@ -8,7 +8,6 @@ export class DataService {
    private _VerCabecera: boolean = true
    private _VerBarraLateral: boolean = true
    private _NombreUsuario:string = "Default";
-   private _Cargando: boolean = true
   
   constructor() { }
 
@@ -33,13 +32,5 @@ export class DataService {
 
   public set NombreUsuario(v:string){
     this._NombreUsuario = v
-  }
-
-  public get Cargando(): boolean{
-    return this._Cargando
-  }
-
-  public set Cargando(v:  boolean){
-    this._Cargando = v
   }
 }

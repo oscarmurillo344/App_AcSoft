@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ClienteService } from 'src/app/ModuloAvanzado/Servicios/cliente.service';
 import { MensajeResponse } from 'src/app/ModuloPrincipal/Modelos/MensajeResponse';
-import { DataService } from 'src/app/ModuloPrincipal/Servicios/data.service';
 import { ClienteRequest } from '../../../Modelos/ClienteRequest';
 
 @Component({
@@ -17,8 +16,7 @@ export class CrearClienteComponent implements OnInit {
 
   constructor(private mensajeModal: ToastrService,
               private fb: FormBuilder,
-              private __clienteService: ClienteService,
-              private _dataService: DataService ) { }
+              private __clienteService: ClienteService ) { }
 
   ngOnInit(): void {
     this.CrearFormulario()
@@ -26,29 +24,27 @@ export class CrearClienteComponent implements OnInit {
 
   CrearFormulario(): void{
    this.ClienteForm = this.fb.group ({
-      IdCliente:          ["",Validators.required],
-      TipoIdentificacion: ["",Validators.required],
-      Identificacion:     ["",Validators.required],
-      Nombre:             ["",Validators.required],
-      Direccion:          ["",Validators.required],
-      Telefono:           ["",[Validators.required, Validators.pattern("^[0-9]*")]],
-      Correo:             ["",[Validators.required,Validators.email]],
-      RazonSocial:        ["",Validators.required],
-      Estado:             ["",Validators.required],
-      Activo:             ["",Validators.required]
+      tipoIdentificacion: ["",Validators.required],
+      identificacion:     ["",Validators.required],
+      nombre:             ["",Validators.required],
+      direccion:          ["",Validators.required],
+      telefono:           ["",[Validators.required, Validators.pattern("^[0-9]*")]],
+      correo:             ["",[Validators.required,Validators.email]],
+      razonSocial:        ["",Validators.required],
+      estado:             ["",Validators.required],
+      activo:             ["",Validators.required]
     });
   }
+  
   CrearCliente():void{
     if(this.ClienteForm.valid){
-      this._dataService.Cargando = false
       this.cliente = this.ClienteForm.value as ClienteRequest
+      this.cliente.estado = Number(this.cliente.estado)
       this.__clienteService.Grabar(this.cliente)
                               .subscribe( (data:MensajeResponse) => {
-                                this.mensajeModal.success("Registro exitoso","Exitosos")
-                                this._dataService.Cargando = true
+                                this.mensajeModal.success(data.mensajeRetorno,"Exitosos")
                               }, err => {
-                                this.mensajeModal.error("Error en consulta","Error")
-                                this._dataService.Cargando = true
+                                this.mensajeModal.error(err.error.mensajeRetorno,"Error")
                               })
     }else{
       this.mensajeModal.info("El formulario es inválido","Información")

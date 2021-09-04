@@ -1,3 +1,4 @@
+<app-cargando></app-cargando>
 <mat-sidenav-container class="w-100 h-100 FondoPantalla">
 
     <mat-sidenav #drawer class="sidenav FondoNavBar" fixedInViewport 
@@ -70,9 +71,7 @@
               <mat-icon>logout</mat-icon>Cerrar sesión</button>
           </mat-menu>
       </mat-toolbar>
-
-      <router-outlet *ngIf="_dataservice.Cargando" ></router-outlet>
-      <mat-spinner class="mx-auto loading" *ngIf="!_dataservice.Cargando" [color]="color"></mat-spinner>
+      <router-outlet></router-outlet>
   </mat-sidenav-content>
 
 </mat-sidenav-container>

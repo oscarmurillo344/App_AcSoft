@@ -1,13 +1,13 @@
 export interface ClienteRequest {
 
-    IdCliente: string
-    TipoIdentificacion:string
-    Identificacion:string
-    Nombre:string
-    Direccion:string
-    Telefono:string
-    Correo:string
-    RazonSocial:string
-    Estado:number
-    Activo:boolean
+    idCliente: string
+    tipoIdentificacion:string
+    identificacion:string
+    nombre:string
+    direccion:string
+    telefono:string
+    correo:string
+    razonSocial:string
+    estado:number
+    activo:boolean
 }

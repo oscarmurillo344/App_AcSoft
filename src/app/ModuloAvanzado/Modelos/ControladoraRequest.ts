@@ -1,7 +1,7 @@
 export interface ControladoraRequest {
-    Codigo:string
-    Nombre:string
-    Marca:string
-    Serie:string
-    Activo:string
+    idControladora:string
+    nombre:string
+    idMarca:number
+    serie:string
+    activo:boolean
 }

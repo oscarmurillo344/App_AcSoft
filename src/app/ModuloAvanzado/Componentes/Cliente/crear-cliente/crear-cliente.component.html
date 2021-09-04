@@ -3,18 +3,12 @@
       <mat-card-title class="p-3">Ingresar Cliente</mat-card-title>
         <form [formGroup]="ClienteForm">
             <div class="row">
-              <div class="col-md-6 col-12">
-                <mat-form-field class="w-100" >
-                  <mat-label>Codigo</mat-label>
-                  <input matInput type="text" formControlName="IdCliente">
-                </mat-form-field>
-              </div>
-              <div class="col-md-6 col-12">
+              <div class="col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Seleccione tipo identificación:</mat-label>
-                  <mat-select formControlName="TipoIdentificacion">
-                    <mat-option value="cedula">Cedula</mat-option>
-                    <mat-option value="ruc">Ruc</mat-option>
+                  <mat-select formControlName="tipoIdentificacion">
+                    <mat-option value="CED">Cedula</mat-option>
+                    <mat-option value="RUC">Ruc</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
@@ -23,13 +17,13 @@
               <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Nombre</mat-label>
-                  <input matInput type="text" formControlName="Nombre">
+                  <input matInput type="text" formControlName="nombre">
                 </mat-form-field>
               </div>
               <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Identificación</mat-label>
-                  <input matInput type="text" formControlName="Identificacion">
+                  <input matInput type="text" formControlName="identificacion">
                 </mat-form-field>
               </div>
             </div>
@@ -38,13 +32,13 @@
               <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Dirección</mat-label>
-                  <input matInput type="text" formControlName="Direccion">
+                  <input matInput type="text" formControlName="direccion">
                 </mat-form-field>
               </div>
               <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Telefono</mat-label>
-                  <input matInput type="text" formControlName="Telefono">
+                  <input matInput type="text" formControlName="telefono">
                 </mat-form-field>
               </div>
             </div>
@@ -52,13 +46,13 @@
               <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Correo</mat-label>
-                  <input matInput type="email" formControlName="Correo">
+                  <input matInput type="email" formControlName="correo">
                 </mat-form-field>
               </div>
               <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Razón Social</mat-label>
-                  <input matInput type="text" formControlName="RazonSocial">
+                  <input matInput type="text" formControlName="razonSocial">
                 </mat-form-field>
               </div>
             </div>
@@ -66,18 +60,18 @@
               <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Seleccione estado:</mat-label>
-                  <mat-select formControlName="Estado">
-                    <mat-option value="cedula">Verdadero</mat-option>
-                    <mat-option value="ruc">Falso</mat-option>
+                  <mat-select formControlName="estado">
+                    <mat-option value="1">Verdadero</mat-option>
+                    <mat-option value="0">Falso</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
               <div class="col-md-6 col-12">
                 <mat-form-field class="w-100" >
                   <mat-label>Seleccione activo:</mat-label>
-                  <mat-select formControlName="Activo">
-                    <mat-option value="cedula">Cedula</mat-option>
-                    <mat-option value="ruc">Ruc</mat-option>
+                  <mat-select formControlName="activo">
+                    <mat-option value="true">Verdadero</mat-option>
+                    <mat-option value="false">Falso</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
