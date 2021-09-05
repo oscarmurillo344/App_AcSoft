@@ -10,6 +10,8 @@ import { ClienteService } from '../../Servicios/cliente.service';
 import { TagService } from '../../Servicios/tag.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { takeUntil } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-cliente-asignar-tag',
@@ -17,10 +19,11 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 })
 export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
 
-  ListaAsignar:Array<any>
+  ListaAsignar:MatTableDataSource<TagRequest>
   FormClienteTag: FormGroup
   GrabarClienteTag: GrabarClienteTagRequest
-  displayedColumns = ['N','Marca','Nombre', 'Serie', 'Eliminar']
+  VerBoton:boolean = true
+  displayedColumns = ['N','Nombre', 'Codigo', 'Eliminar']
   optionsCliente: ClienteRequest[];
   optionsTag: TagRequest[];
   Tags:TagRequest[]=[]
@@ -37,7 +40,7 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.CrearFormulario()
-    this.ListaAsignar = new Array()
+    this.ListaAsignar = new MatTableDataSource()
     this.GrabarClienteTag = new GrabarClienteTagRequest()
     this.unsubscribe = new Subject<void>()
     this.InicializarFiltros()
@@ -57,9 +60,10 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
 
   InicializarFiltros():void{
     this.FormClienteTag.get('clienteControl').valueChanges
+    .pipe( takeUntil(this.unsubscribe ))
     .subscribe(
         (mensaje) => {
-         if(mensaje.length > 1){
+         if((mensaje != null && mensaje != undefined) && mensaje.length > 1){
           this.optionsCliente = []
           this._servicioCliente.Listar(mensaje)
             .subscribe((data:MensajeResponse) => {
@@ -70,9 +74,10 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
         })
 
     this.FormClienteTag.get('tagsControl').valueChanges
+    .pipe( takeUntil(this.unsubscribe ))
     .subscribe(
         (mensaje:string) => {
-          if(mensaje.length > 1){
+          if((mensaje != null && mensaje != undefined) && mensaje.length > 1){
             this.optionsTag = []
             this._servicioTag.Listar(mensaje)
             .subscribe((data:MensajeResponse)=>{
@@ -100,19 +105,51 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
     }
   }
 
-  AgregarCliente():void{
-    if(this.FormClienteTag.valid && this.Tags.length > 0){
-      this.GrabarClienteTag.cliente = this.optionsCliente[0]
-      this.GrabarClienteTag.tags = this.Tags
-      this._servicioCliente.AsignarTags(this.GrabarClienteTag)
-          .subscribe((data:MensajeResponse) =>{
+  MostarClienteTags(event: MatAutocompleteSelectedEvent):void {
+    let clienteTags = Number(event.option.id)
+    this._servicioCliente.ConsultarClienteTag(clienteTags)
+          .subscribe((data:MensajeResponse) => {
             if(data.retorno){
-              this.mensajeModal.success("Exitoso", "Registro exitoso")
+              this.ListaAsignar = new MatTableDataSource(data.objetoRetorno.tags)
             }
           })
+  }
+
+  Eliminar(tag:TagRequest):void{
+    this.ListaAsignar = new MatTableDataSource(this.ListaAsignar.data.filter( data=> data.idTag != tag.idTag))
+  }
+
+  AgregarClienteTags():void{
+    if(this.FormClienteTag.valid && this.Tags.length > 0){
+      this.ListaAsignar.data.forEach( 
+        data => (this.Tags.find(
+          filtro=> filtro.nombre==data.nombre) == null)?this.Tags.push(data):null) // merge con los datos del grid y inputTag
+      this.ListaAsignar = new MatTableDataSource(this.Tags)
+      this.Tags=[]
+      this.VerBoton = false
+      this.mensajeModal.info("Se agregaron tags", "Información")
     }else{
-      this.mensajeModal.info("El formulario es inválido","Información")
+      this.mensajeModal.warning("El formulario es inválido","Advertencia")
     }
   }
+
+  GrabarClienteTags(): void{
+    if(this.FormClienteTag.valid && this.ListaAsignar.data.length > 0){
+    this.GrabarClienteTag.cliente = this.optionsCliente[0]
+    this.GrabarClienteTag.tags = this.ListaAsignar.data
+    this._servicioCliente.AsignarTags(this.GrabarClienteTag)
+    .subscribe((data:MensajeResponse) =>{
+      if(data.retorno){
+        this.mensajeModal.success("Exitoso", "Registro exitoso")
+        this.FormClienteTag.get('clienteControl').reset()
+        this.VerBoton = true
+        this.ListaAsignar = new MatTableDataSource()
+        this.Tags=[]
+      }
+    })
+  }else{
+    this.mensajeModal.warning("El formulario es inválido","Advertencia")
+  }
+}
 
 }

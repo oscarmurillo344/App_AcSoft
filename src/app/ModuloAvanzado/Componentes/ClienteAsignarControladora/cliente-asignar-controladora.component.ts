@@ -7,10 +7,11 @@ import { ControladoraRequest } from '../../Modelos/ControladoraRequest';
 import { GrabarClienteControladoraRequest } from '../../Modelos/GrabarClienteControladoraRequest';
 import { ClienteService } from '../../Servicios/cliente.service';
 import { ControladoraService } from '../../Servicios/controladora.service';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {  MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'cliente-asignar-controladora',
@@ -19,8 +20,9 @@ import { ToastrService } from 'ngx-toastr';
 export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
 
 
- separatorKeysCodes: number[] = [ENTER, COMMA];
-  ListaAsignar:Array<any>
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  ListaAsignar:MatTableDataSource<ControladoraRequest>
+  VerBoton:boolean = true
   FormClienteControlador: FormGroup
   GrabarClienteControlador: GrabarClienteControladoraRequest
   displayedColumns = ['N','Marca','Nombre', 'Serie', 'Eliminar']
@@ -40,7 +42,7 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.CrearFormulario()
-    this.ListaAsignar = new Array()
+    this.ListaAsignar = new MatTableDataSource()
     this.GrabarClienteControlador = new GrabarClienteControladoraRequest()
     this.unsubscribe = new Subject<void>()
     this.InicializarFiltros()
@@ -63,7 +65,7 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
     .pipe ( takeUntil(this.unsubscribe))
     .subscribe(
         (mensaje) => {
-         if(mensaje.length > 1){
+         if((mensaje != null && mensaje != undefined) && mensaje.length > 1){
           this.optionsCliente = []
           this._servicioCliente.Listar(mensaje)
             .subscribe((data:MensajeResponse) => {
@@ -99,24 +101,58 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
     this.resetInputs()
   }
 
+  Eliminar(control:ControladoraRequest):void{
+    this.ListaAsignar = new MatTableDataSource(this.ListaAsignar.data.filter( data=> data.idControladora != control.idControladora))
+  }
+
   SeleccionControl(event: MatAutocompleteSelectedEvent): void {
     if(!this.Controladoras.find((data:ControladoraRequest) => data.idControladora == event.option.value.idControladora)){
       this.Controladoras.push(event.option.value as ControladoraRequest);
       this.resetInputs()
     }
   }
+
+  MostarClienteControlador(event: MatAutocompleteSelectedEvent):void {
+    let clienteControlador = Number(event.option.id)
+    this._servicioCliente.ConsultarClienteControladora(clienteControlador)
+          .subscribe((data:MensajeResponse) => {
+            if(data.retorno){
+              this.ListaAsignar = new MatTableDataSource(data.objetoRetorno.controladoras)
+            }
+          })
+  }
+
   AgregarCliente():void{
     if(this.FormClienteControlador.valid && this.Controladoras.length > 0){
+      this.ListaAsignar.data.forEach( 
+        data => (this.Controladoras.find(
+          filtro=> filtro.nombre==data.nombre) == null)?this.Controladoras.push(data):null) // merge con los datos del grid y inputTag
+      this.ListaAsignar = new MatTableDataSource(this.Controladoras)
+      this.Controladoras=[]
+      this.VerBoton = false
+      this.mensajeModal.info("Se agregaron tags", "Información")
+    }else{
+      this.mensajeModal.info("El formulario es inválido","Información")
+    }
+  }
+
+  GrabarClienteControladora(): void{
+    if(this.FormClienteControlador.valid && this.ListaAsignar.data.length > 0){
       this.GrabarClienteControlador.cliente = this.optionsCliente[0]
-      this.GrabarClienteControlador.controladoras = this.Controladoras
+      this.GrabarClienteControlador.controladoras = this.ListaAsignar.data
       this._servicioCliente.AsignarControlador(this.GrabarClienteControlador)
           .subscribe((data:MensajeResponse) =>{
             if(data.retorno){
               this.mensajeModal.success("Exitoso", "Registro exitoso")
+              this.FormClienteControlador.reset()
+              this.Controladoras = []
+              this.ListaAsignar = new MatTableDataSource()
+              this.VerBoton = true
             }
           })
     }else{
       this.mensajeModal.info("El formulario es inválido","Información")
     }
   }
+  
 }

@@ -1,5 +1,5 @@
 export interface ControladoraRequest {
-    idControladora:string
+    idControladora:number
     nombre:string
     idMarca:number
     serie:string

@@ -45,4 +45,14 @@ export class ClienteService {
   public AsignarTags(clienteTags:GrabarClienteTagRequest):Observable<MensajeResponse>{
     return this.http.post<MensajeResponse>( Url_Cliente +'grabarclientetag', clienteTags)
   }
+
+  public ConsultarClienteTag(idCliente:number):Observable<MensajeResponse>{
+    return this.http.get<MensajeResponse>( Url_Cliente +'consultarclientetag/'+idCliente)
+  }
+
+  public ConsultarClienteControladora(idCliente:number):Observable<MensajeResponse>{
+    return this.http.get<MensajeResponse>( Url_Cliente +'consultarclientecontroladora/'+idCliente)
+  }
+
 }
+

@@ -1,7 +1,7 @@
 <div class="container">
     <mat-card class="my-4">
-      <mat-card-title class="p-3">Asignar controladora a clientes</mat-card-title>
-      <form [formGroup]="FormClienteControlador">
+      <mat-card-title class="p-3">Asignar cliente tag</mat-card-title>
+      <form [formGroup]="FormClienteTag">
         <div class="row" >
           <div class="col-md-6 col-12"  >
             <mat-form-field class="w-100">
@@ -11,46 +11,56 @@
                        matInput
                        formControlName="clienteControl"
                        [matAutocomplete]="autoCliente">
-                <mat-autocomplete #autoCliente="matAutocomplete">
-                  <mat-option *ngFor="let cliente of optionsCliente" [value]="cliente.nombre">
-                    {{cliente.nombre}}
-                  </mat-option>
-                </mat-autocomplete>
+      <mat-autocomplete #autoCliente="matAutocomplete"
+                       (optionSelected) = "MostarClienteTags($event)">
+       <mat-option *ngFor="let cliente of optionsCliente" 
+                   [id]="cliente.idCliente" 
+                   [value]="cliente.nombre">
+         {{cliente.nombre}}
+       </mat-option>
+     </mat-autocomplete>
               </mat-form-field>
           </div>
           <div class="col-md-6 col-12">
             <mat-form-field class="w-100">
-                <mat-label>Controladora</mat-label>
+                <mat-label>Tags</mat-label>
                 <mat-chip-list #chipList >
                   <mat-chip
-                  *ngFor="let control of Controladoras"
+                  *ngFor="let tag of Tags"
                   [selectable]="true"
                   [removable]="true"
-                  (removed)="remove(control)">
-                  {{control.nombre}}
+                  (removed)="remove(tag)">
+                  {{tag.nombre}}
                   <mat-icon matChipRemove >cancel</mat-icon>
                 </mat-chip>
-                <input placeholder="Añadir controladora"
-                       #ControladorInput
-                       formControlName="ControladoraControl"
-                       [matAutocomplete]="autoControlador"
-                       [matChipInputFor]="chipList"
-                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                       [matChipInputAddOnBlur]=true>
+
+                <input type="text"
+                placeholder="Añadir tags"
+                #TagInput
+                formControlName="tagsControl"
+                [matAutocomplete]="autoTags"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]=true>
                 </mat-chip-list>
-                <mat-autocomplete #autoControlador="matAutocomplete"
-                                  (optionSelected) = "SeleccionControl($event)">
-                  <mat-option *ngFor="let controladora of optionsControladora" 
-                              [value]="controladora">
-                    {{controladora.nombre}}
+
+                <mat-autocomplete #autoTags="matAutocomplete"
+                                  (optionSelected) = "SeleccionTag($event)">
+                  <mat-option *ngFor="let tag of optionsTag" [value]="tag">
+                    {{tag.nombre}}
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>
           </div>
       </div>
       <div class="row">
-        <div class="col-12">
-          <button mat-fab color="primary" class="float-end" matTooltip="Agregar cliente" (click)="AgregarCliente()">
+        <div class="col-10">
+          <button  mat-raised-button class="w-100" [disabled]="VerBoton" (click)="GrabarClienteTags()" color="primary" >
+            Ingresar 
+        </button>
+        </div>
+        <div class="col-2">
+          <button mat-fab color="primary" class="float-end" matTooltip="Agregar tags a cliente" (click)="AgregarClienteTags()">
             <mat-icon>add</mat-icon>
           </button>
         </div>
@@ -61,22 +71,17 @@
   
           <ng-container matColumnDef="N">
             <th mat-header-cell *matHeaderCellDef> N° </th>
-            <td mat-cell *matCellDef="let element "> {{ element.Nombre }} </td>
+            <td mat-cell *matCellDef="let element "> {{ element.idTag }} </td>
           </ng-container>
     
-          <ng-container matColumnDef="Marca">
-            <th mat-header-cell *matHeaderCellDef>Marca</th>
-            <td mat-cell *matCellDef="let element "> {{ element.Marca }} </td>
-          </ng-container>
-
           <ng-container matColumnDef="Nombre">
             <th mat-header-cell *matHeaderCellDef>Nombre</th>
-            <td mat-cell *matCellDef="let element "> {{ element.Nombre }} </td>
+            <td mat-cell *matCellDef="let element "> {{ element.nombre }} </td>
           </ng-container>
 
-          <ng-container matColumnDef="Serie">
-            <th mat-header-cell *matHeaderCellDef>Nombre</th>
-            <td mat-cell *matCellDef="let element "> {{ element.Serie }} </td>
+          <ng-container matColumnDef="Codigo">
+            <th mat-header-cell *matHeaderCellDef>Código Acceso</th>
+            <td mat-cell *matCellDef="let element "> {{ element.codigoAcceso }} </td>
           </ng-container>
           
           <!-- Weight Column -->

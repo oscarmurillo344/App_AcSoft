@@ -20,8 +20,8 @@ import { CompartidoModule } from '../ModuloCompartido/compartido.module';
 import { ClienteService } from './Servicios/cliente.service';
 import { ControladoraService } from './Servicios/controladora.service';
 import { TagService } from './Servicios/tag.service';
-import { ClienteAsignarTagComponent } from './Componentes/cliente-asignar-tag/cliente-asignar-tag.component';
-import { ClienteAsignarControladoraComponent } from './Componentes/cliente-asignar-controladora/cliente-asignar-controladora.component';
+import { ClienteAsignarTagComponent } from './Componentes/ClienteAsignarTag/cliente-asignar-tag.component';
+import { ClienteAsignarControladoraComponent } from './Componentes/ClienteAsignarControladora/cliente-asignar-controladora.component';
 
 
 
