@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 import { TagRequest } from 'src/app/ModuloAvanzado/Modelos/TagRequest';
 import { TagService } from 'src/app/ModuloAvanzado/Servicios/tag.service';
 import { DialogoYesNoComponent } from 'src/app/ModuloPrincipal/Componentes/dialogo-yes-no/dialogo-yes-no.component';
@@ -17,6 +19,7 @@ export class EditarAnularTagComponent implements OnInit {
   ListaTag:MatTableDataSource<TagRequest> 
   displayedColumns = ['Nombre','Editar','Eliminar']
   BuscarTag:string=''
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
      private dialogo:MatDialog,
@@ -24,14 +27,22 @@ export class EditarAnularTagComponent implements OnInit {
      private _servicioTag:TagService) { 
   }
 
-  ngOnInit(): void {
-    this.ListaTag = new MatTableDataSource()
+  ngOnInit(): void {  }
+
+  inicializarPaginator() {
+    this.ListaTag.paginator = this.paginator;
   }
 
   Editar(element:TagRequest):void{
    this.dialogo.open(DialogoTagComponent, { data: element })
                 .afterClosed()
-                  .subscribe((data:string) => this.dialogo.closeAll())
+                  .subscribe((msm:string) => {
+                    this.dialogo.closeAll()
+                    if(msm == "true"){
+                      this.ListaTag = new MatTableDataSource()
+                      this.inicializarPaginator()
+                    }
+                  })
   }
 
   Eliminar(element:TagRequest):void{
@@ -42,41 +53,32 @@ export class EditarAnularTagComponent implements OnInit {
                         this._servicioTag.Anular(Number(element.idTag))
                             .subscribe((data:MensajeResponse) =>{
                               if(data.retorno){                                                 
+                                this.ListaTag = new MatTableDataSource()
+                                this.inicializarPaginator()
                                 this.mensajeModal.success("Anulación exitosa","Exitoso")
                                 }
-                              }, err =>{
-                                this.mensajeModal.error("Error en la consulta", "Error")
                               })
                         }
-                        else this.dialogo.closeAll();
+                        this.dialogo.closeAll();
                     })
   }
 
   TagBuscar():void {
+    let ServicioTag:Observable<MensajeResponse>
     if(this.BuscarTag.match(/^[0-9]+$/)){
       let idTag = Number(this.BuscarTag)
-      this._servicioTag.Consultar(idTag)
-      .subscribe( (data:MensajeResponse) =>{
-        if(data.retorno){
-        let lista = data.objetoRetorno.tags as TagRequest[]
-        this.ListaTag = new MatTableDataSource(lista)
-        }
-        this.mensajeModal.success("Busqueda exitosa","Exitoso")
-      }, () =>{
-        this.mensajeModal.error("Error en la consulta", "Error")
-      })
+     ServicioTag = this._servicioTag.Consultar(idTag)
     }else{
-      this._servicioTag.Listar(this.BuscarTag)
-      .subscribe( (data:MensajeResponse) =>{
-        if(data.retorno){
-        let lista = data.objetoRetorno.tags as TagRequest[]
-        this.ListaTag = new MatTableDataSource(lista)
-        }
-        this.mensajeModal.success("Busqueda exitosa","Exitoso")
-      }, () =>{
-        this.mensajeModal.error("Error en la consulta", "Error")
-      })
+     ServicioTag = this._servicioTag.Listar(this.BuscarTag)
     }
+    ServicioTag 
+        .subscribe( (data:MensajeResponse) =>{
+          if(data.retorno){
+          let lista = data.objetoRetorno.tags as TagRequest[]
+          this.ListaTag = new MatTableDataSource(lista)
+          this.inicializarPaginator()
+          this.mensajeModal.success("Busqueda exitosa","Exitoso")
+          }
+        })
   }
-
 }

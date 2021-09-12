@@ -38,7 +38,7 @@ import { CargandoComponent } from './Componentes/cargando/cargando.component';
     ToastrModule.forRoot({
       timeOut:2000,
       positionClass:"toast-top-right",
-      preventDuplicates:true
+      preventDuplicates:false
     }),
   ],
   providers: [

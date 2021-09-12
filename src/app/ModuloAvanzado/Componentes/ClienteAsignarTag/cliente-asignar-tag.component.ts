@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { takeUntil } from 'rxjs/operators';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-cliente-asignar-tag',
@@ -28,6 +29,7 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
   optionsTag: TagRequest[];
   Tags:TagRequest[]=[]
   @ViewChild('TagInput') TagInput: ElementRef<HTMLInputElement>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   private unsubscribe:Subject<void> 
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -40,7 +42,6 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.CrearFormulario()
-    this.ListaAsignar = new MatTableDataSource()
     this.GrabarClienteTag = new GrabarClienteTagRequest()
     this.unsubscribe = new Subject<void>()
     this.InicializarFiltros()
@@ -56,6 +57,10 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
       clienteControl: ['', Validators.required],
       tagsControl:['']
     })
+  }
+
+  inicializarPaginator() {
+    this.ListaAsignar.paginator = this.paginator;
   }
 
   InicializarFiltros():void{
@@ -111,6 +116,7 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
           .subscribe((data:MensajeResponse) => {
             if(data.retorno){
               this.ListaAsignar = new MatTableDataSource(data.objetoRetorno.tags)
+              this.inicializarPaginator()
             }
           })
   }
@@ -125,6 +131,7 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
         data => (this.Tags.find(
           filtro=> filtro.nombre==data.nombre) == null)?this.Tags.push(data):null) // merge con los datos del grid y inputTag
       this.ListaAsignar = new MatTableDataSource(this.Tags)
+      this.inicializarPaginator()
       this.Tags=[]
       this.VerBoton = false
       this.mensajeModal.info("Se agregaron tags", "Información")
@@ -141,9 +148,10 @@ export class ClienteAsignarTagComponent implements OnInit, OnDestroy {
     .subscribe((data:MensajeResponse) =>{
       if(data.retorno){
         this.mensajeModal.success("Exitoso", "Registro exitoso")
-        this.FormClienteTag.get('clienteControl').reset()
+        this.FormClienteTag.reset()
         this.VerBoton = true
-        this.ListaAsignar = new MatTableDataSource()
+        this.inicializarPaginator()
+        this.ListaAsignar = null
         this.Tags=[]
       }
     })

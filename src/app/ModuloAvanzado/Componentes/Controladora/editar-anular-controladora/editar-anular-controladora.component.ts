@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 import { ControladoraRequest } from 'src/app/ModuloAvanzado/Modelos/ControladoraRequest';
 import { ControladoraService } from 'src/app/ModuloAvanzado/Servicios/controladora.service';
 import { DialogoYesNoComponent } from 'src/app/ModuloPrincipal/Componentes/dialogo-yes-no/dialogo-yes-no.component';
@@ -17,6 +19,7 @@ export class EditarAnularControladoraComponent implements OnInit {
   ListaControladora:MatTableDataSource<ControladoraRequest> 
   displayedColumns = ['Nombre','Editar','Eliminar']
   BuscarControladora:string=''
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor( 
     private dialogo:MatDialog,
@@ -25,16 +28,24 @@ export class EditarAnularControladoraComponent implements OnInit {
     ) { 
   }
 
-  ngOnInit(): void {
-    this.ListaControladora = new MatTableDataSource()
+  ngOnInit(): void {  }
+
+  inicializarPaginator() {
+    this.ListaControladora.paginator = this.paginator;
   }
 
   Editar(element:ControladoraRequest):void{
    this.dialogo.open(DialogoControladoraComponent, { data: element })
                 .afterClosed()
-                  .subscribe((data:string) => this.dialogo.closeAll())
+                  .subscribe((msm:string) => {
+                    this.dialogo.closeAll()
+                    if(msm == "true"){
+                      this.ListaControladora = new MatTableDataSource()
+                      this.inicializarPaginator()
+                    }
+                  })
   }
-
+ 
   Eliminar(element:ControladoraRequest):void{
    this.dialogo.open(DialogoYesNoComponent, {data:{ titulo: "Controladora", nombre:element.nombre }})
                 .afterClosed()
@@ -44,39 +55,29 @@ export class EditarAnularControladoraComponent implements OnInit {
                             .subscribe((data:MensajeResponse) =>{
                               if(data.retorno){                                                 
                                 this.mensajeModal.success("Anulación exitosa","Exitoso")
-                                }
-                              }, err =>{
-                                this.mensajeModal.error("Error en la consulta", "Error")
+                                this.ListaControladora = new MatTableDataSource()
+                                this.inicializarPaginator()
+                              }
                               })
                         }
-                        else this.dialogo.closeAll();
+                        this.dialogo.closeAll();
          })
  }
   BuscarControladoras():void{
-    if(this.BuscarControladora.match(/^[0-9]+$/)){
-      var idCliente = Number(this.BuscarControladora)
-      this._Controladorservice.Consultar(idCliente)
-                            .subscribe( (data:MensajeResponse) =>{
-                              if(data.retorno){
-                              let lista = data.objetoRetorno.controladoras as ControladoraRequest[]
-                              this.ListaControladora = new MatTableDataSource(lista)
-                              }
-                              this.mensajeModal.success("Busqueda exitosa","Exitoso")
-                            }, () =>{
-                              this.mensajeModal.error("Error en la consulta", "Error")
-                            })
-    }else{
-      this._Controladorservice.Listar(this.BuscarControladora)
-                            .subscribe( (data:MensajeResponse) =>{
-                              if(data.retorno){
-                                let lista = data.objetoRetorno.controladoras as ControladoraRequest[]
-                                this.ListaControladora = new MatTableDataSource(lista)
-                                this.mensajeModal.success("Busqueda exitosa","Exitoso")
-                              }
-                              }, err =>{
-                                this.mensajeModal.error("Error en la consulta", "Error")
-                              })
-    }
+    let ServicioControladora:Observable<MensajeResponse>
+        if(this.BuscarControladora.match(/^[0-9]+$/)){
+          var idCliente = Number(this.BuscarControladora)
+          ServicioControladora = this._Controladorservice.Consultar(idCliente)                      
+        }else{
+          ServicioControladora = this._Controladorservice.Listar(this.BuscarControladora)                      
+        }
+        ServicioControladora
+        .subscribe( (data:MensajeResponse) =>{
+          if(data.retorno){
+            let lista = data.objetoRetorno.controladoras as ControladoraRequest[]
+            this.ListaControladora = new MatTableDataSource(lista)
+            this.inicializarPaginator()
+            this.mensajeModal.success("Busqueda exitosa","Exitoso")
+          }})
   }
-
 }

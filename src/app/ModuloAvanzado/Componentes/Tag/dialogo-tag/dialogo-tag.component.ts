@@ -46,8 +46,6 @@ export class DialogoTagComponent implements OnInit {
                 this.mensajeModal.success("Registro exitoso","Exitosos")
               }
               this.ActTagForm.reset()
-            },() => {
-              this.mensajeModal.error("Error en la consulta", "Error")
             })
     }else{
       this.mensajeModal.info("El formulario es inválido","Información")

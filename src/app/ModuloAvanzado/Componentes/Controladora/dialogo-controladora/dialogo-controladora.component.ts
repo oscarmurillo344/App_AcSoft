@@ -48,8 +48,6 @@ export class DialogoControladoraComponent implements OnInit {
             if(data.retorno){
               this.mensajeModal.success("Registro exitoso","Exitosos")
             }
-          },() => {
-            this.mensajeModal.error("Error en la consulta", "Error")
           })
     }else{
       this.mensajeModal.info("El formulario es inválido","Información")

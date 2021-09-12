@@ -19,6 +19,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 const ModuloMaterial = [
@@ -40,7 +41,8 @@ const ModuloMaterial = [
   MatTabsModule,
   MatTableModule,
   MatProgressSpinnerModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatPaginatorModule
 ]
 
 @NgModule({

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from 'src/app/ModuloPrincipal/Servicios/data.service';
 
 @Component({
   selector: 'app-principal-cliente',
@@ -7,12 +6,7 @@ import { DataService } from 'src/app/ModuloPrincipal/Servicios/data.service';
 })
 export class PrincipalClienteComponent implements OnInit {
 
- 
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
+  constructor() {}
+  ngOnInit(): void {}
 
 }

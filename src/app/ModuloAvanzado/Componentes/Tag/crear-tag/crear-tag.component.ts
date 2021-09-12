@@ -42,8 +42,6 @@ export class CrearTagComponent implements OnInit {
                 this.mensajeModal.success("Registro exitoso","Exitosos")
               }
               this.TagForm.reset()
-            },() => {
-              this.mensajeModal.error("Error en la consulta", "Error")
             })
     }else{
       this.mensajeModal.info("El formulario es inválido","Información")

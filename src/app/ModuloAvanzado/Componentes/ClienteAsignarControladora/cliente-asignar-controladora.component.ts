@@ -12,6 +12,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'cliente-asignar-controladora',
@@ -30,6 +31,7 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
   optionsControladora: ControladoraRequest[]
   Controladoras: ControladoraRequest[]=[]
   @ViewChild('ControladorInput') ControladorInput: ElementRef<HTMLInputElement>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   private unsubscribe:Subject<void> 
 
   constructor(
@@ -42,7 +44,6 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.CrearFormulario()
-    this.ListaAsignar = new MatTableDataSource()
     this.GrabarClienteControlador = new GrabarClienteControladoraRequest()
     this.unsubscribe = new Subject<void>()
     this.InicializarFiltros()
@@ -58,6 +59,10 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
       clienteControl: ['', Validators.required],
       ControladoraControl:['']
     })
+  }
+
+  inicializarPaginator() {
+    this.ListaAsignar.paginator = this.paginator;
   }
 
   InicializarFiltros():void{
@@ -118,6 +123,7 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
           .subscribe((data:MensajeResponse) => {
             if(data.retorno){
               this.ListaAsignar = new MatTableDataSource(data.objetoRetorno.controladoras)
+              this.inicializarPaginator()
             }
           })
   }
@@ -128,6 +134,7 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
         data => (this.Controladoras.find(
           filtro=> filtro.nombre==data.nombre) == null)?this.Controladoras.push(data):null) // merge con los datos del grid y inputTag
       this.ListaAsignar = new MatTableDataSource(this.Controladoras)
+      this.inicializarPaginator()
       this.Controladoras=[]
       this.VerBoton = false
       this.mensajeModal.info("Se agregaron tags", "Información")
@@ -146,7 +153,8 @@ export class ClienteAsignarControladoraComponent implements OnInit, OnDestroy {
               this.mensajeModal.success("Exitoso", "Registro exitoso")
               this.FormClienteControlador.reset()
               this.Controladoras = []
-              this.ListaAsignar = new MatTableDataSource()
+              this.inicializarPaginator()
+              this.ListaAsignar = null
               this.VerBoton = true
             }
           })

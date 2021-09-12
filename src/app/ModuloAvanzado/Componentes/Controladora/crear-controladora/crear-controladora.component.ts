@@ -43,8 +43,6 @@ export class CrearControladoraComponent implements OnInit {
               this.mensajeModal.success("Registro exitoso","Exitosos")
             }
             this.ControladoraForm.reset()
-          },(err) => {
-            this.mensajeModal.error("Error en la consulta", "Error")
           })
     }else{
       this.mensajeModal.info("El formulario es inválido","Información")

@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 import { ClienteRequest } from 'src/app/ModuloAvanzado/Modelos/ClienteRequest';
 import { ClienteService } from 'src/app/ModuloAvanzado/Servicios/cliente.service';
 import { DialogoYesNoComponent } from 'src/app/ModuloPrincipal/Componentes/dialogo-yes-no/dialogo-yes-no.component';
 import { MensajeResponse } from 'src/app/ModuloPrincipal/Modelos/MensajeResponse';
-import { DataService } from 'src/app/ModuloPrincipal/Servicios/data.service';
 import { DialogoEditarComponent } from '../dialogo-editar/dialogo-editar.component';
 
 @Component({
@@ -18,20 +19,30 @@ export class EditarAnularClienteComponent implements OnInit {
   ListaCliente:MatTableDataSource<ClienteRequest>
   displayedColumns = ['Nombre','Editar','Eliminar']
   BuscarCliente:string=''
-
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  
   constructor(private dialogo:MatDialog,
               private _clienteservice: ClienteService,
               private mensajeModal: ToastrService) { 
   }
 
   ngOnInit(): void {
-    this.ListaCliente = new MatTableDataSource()
+  }
+
+  inicializarPaginator() {
+    this.ListaCliente.paginator = this.paginator;
   }
 
   Editar(element:ClienteRequest):void{
    this.dialogo.open(DialogoEditarComponent, { data: element })
                 .afterClosed()
-                  .subscribe( data => this.dialogo.closeAll())
+                  .subscribe( (data:string) => {
+                    this.dialogo.closeAll()
+                    if(data == "true"){
+                      this.ListaCliente = new MatTableDataSource()
+                      this.inicializarPaginator()
+                    }
+                  })
   }
 
   Eliminar(element:ClienteRequest):void{
@@ -43,40 +54,31 @@ export class EditarAnularClienteComponent implements OnInit {
                                               .subscribe((data:MensajeResponse) =>{
                                                 if(data.retorno){                                                 
                                                   this.mensajeModal.success("Anulación exitosa","Exitoso")
+                                                  this.ListaCliente = new MatTableDataSource()
+                                                  this.inicializarPaginator()
                                                   }
-                                                }, err =>{
-                                                  this.mensajeModal.error("Error en la consulta", "Error")
                                                 })
-                      }else{
-                        this.dialogo.closeAll()
                       }
+                        this.dialogo.closeAll()
                     })
   }
 
   BuscarClientes():void{
+    let ServicioCliente: Observable<MensajeResponse>
+
     if(this.BuscarCliente.match(/^[0-9]+$/)){
-      var idCliente = Number(this.BuscarCliente)
-      this._clienteservice.Consultar(idCliente)
-                            .subscribe( (data:MensajeResponse) =>{
-                              if(data.retorno){
-                                let lista = data.objetoRetorno.clientes as ClienteRequest []
-                                this.ListaCliente = new MatTableDataSource(lista)
-                                this.mensajeModal.success("Busqueda exitosa","Exitoso")
-                              }
-                            }, err =>{
-                              this.mensajeModal.error( err.error.mensajeRetorno, "Error")
-                            })
+      let idCliente = Number(this.BuscarCliente)
+    ServicioCliente = this._clienteservice.Consultar(idCliente)
     }else{
-      this._clienteservice.Listar(this.BuscarCliente)
-                            .subscribe( (data:MensajeResponse) =>{
-                              if(data.retorno){
-                                let lista = data.objetoRetorno as ClienteRequest[]
-                                this.ListaCliente = new MatTableDataSource(lista)
-                                this.mensajeModal.success("Busqueda exitosa","Exitoso")
-                              }
-                              }, err =>{
-                                this.mensajeModal.error( err.error.mensajeRetorno, "Error")
-                              })
+    ServicioCliente = this._clienteservice.Listar(this.BuscarCliente)
     }   
+    ServicioCliente.subscribe( 
+          (data:MensajeResponse) =>{
+            if(data.retorno){
+              let lista = data.objetoRetorno.clientes as ClienteRequest[]
+              this.ListaCliente = new MatTableDataSource(lista)
+              this.inicializarPaginator()
+              this.mensajeModal.success("Busqueda exitosa","Exitoso")
+            }})
   }
 }

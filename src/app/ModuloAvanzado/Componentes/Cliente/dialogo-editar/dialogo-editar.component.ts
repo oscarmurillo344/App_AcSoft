@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ClienteRequest } from 'src/app/ModuloAvanzado/Modelos/ClienteRequest';
 import { ClienteService } from 'src/app/ModuloAvanzado/Servicios/cliente.service';
@@ -48,8 +48,6 @@ export class DialogoEditarComponent implements OnInit {
             if(data.retorno){
               this.mensajeModal.success("Registro exitoso","Exitosos")
             }
-          },() =>{
-            this.mensajeModal.error("Error en la consulta","Error")
           })
     }else{
       this.mensajeModal.info("El formulario es inválido","Información")

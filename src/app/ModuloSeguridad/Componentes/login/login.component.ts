@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DataService } from 'src/app/ModuloPrincipal/Servicios/data.service';
 import { StorageService } from 'src/app/ModuloPrincipal/Servicios/storage.service';
 import { UsuarioLoginRequest } from '../../Modelos/UsuarioLoginRequest';
-import {Md5} from 'ts-md5/dist/md5';
+import { Md5} from 'ts-md5/dist/md5';
 import { SeguridadService } from '../../Servicios/seguridad.service';
 import { MensajeResponse } from 'src/app/ModuloPrincipal/Modelos/MensajeResponse';
 import { Formulario } from '../../Modelos/Formulario';
@@ -27,17 +27,18 @@ export class LoginComponent implements OnInit {
               public MensajeModal: ToastrService,
               private route: Router,
               private sesion:StorageService,
-              private __Seguridad: SeguridadService) { }
+              private __Seguridad: SeguridadService,
+              private fb:FormBuilder) { }
 
   ngOnInit(): void {
-    this.UserForm=this.crearFormulario();
+   this.crearFormulario();
   }
 
   crearFormulario(){
-    return new FormGroup({
-     usuario: new FormControl('',Validators.required),
-     contrasena: new FormControl('',Validators.required)
-    });
+    this.UserForm = this.fb.group({
+      usuario:    ['',Validators.required],
+      contrasena: ['',Validators.required]
+    })
   }
 
   LogIn():void{
@@ -52,16 +53,16 @@ export class LoginComponent implements OnInit {
           this.mensajeResponse = data 
           if(this.mensajeResponse.retorno){
           this._dataservice.VerCabecera = true
-          this.sesion.SesionStorageSetear("Usuario", this.mensajeResponse.objetoRetorno.usuario as UsuarioLoginRequest)
-          this.sesion.SesionStorageSetear("Formularios", this.mensajeResponse.objetoRetorno.formularios as Formulario)
+          let usuario = this.mensajeResponse.objetoRetorno.usuario as UsuarioLoginRequest
+          let formulario = this.mensajeResponse.objetoRetorno.formularios as Formulario
+          this.sesion.SesionStorageSetear("Usuario", usuario)
+          this.sesion.SesionStorageSetear("Formularios", formulario)
           this.route.navigate(['principal'])
-          this.MensajeModal.success(this.mensajeResponse.mensajeRetorno,"Exitoso")
+          this.MensajeModal.success("Sesión iniciada","Exitoso")
           }
         })      
     }else{
       this.MensajeModal.info("Campos erroneos","Información")
     }
   }
-
-  
 }
